@@ -26,6 +26,7 @@ class Fact_index_stock(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     security = Column(String(50),ForeignKey('fact_securities.security'))
     child_stock = Column(String(50))
+    effective_date = Column(DateTime)
 
 class Dim_type_securities(Base):
     __tablename__ = 'dim_type_securities'
@@ -38,5 +39,5 @@ class Dim_type_securities(Base):
 
 
 def initial(engine):
-    Base.metadata.drop_all(engine, tables=[Fact_securities.__table__])
+    Base.metadata.drop_all(engine, tables=[Fact_securities.__table__,Fact_index_stock.__table__])
     Base.metadata.create_all(engine)

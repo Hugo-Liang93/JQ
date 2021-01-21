@@ -28,16 +28,16 @@ class DBOperation(object):
             result = operate_func(conn)
             return result
 
-    def conn_operate_orm(self, operate_func):
-        with Session(self._conn) as session:
-            return operate_func(session)
+    def conn_operate_orm(self, stmt):
+        with Session(self._conn) as session, session.begin():
+            return session.execute(stmt)
 
     def close_conn(self):
         self._conn.dispose()
 
-    def to_sql(self, df, table, index=True):
+    def to_sql(self, df, table, if_exists, index=True):
         with self._conn.connect() as conn:
-            df.to_sql(name=table, con=conn, if_exists="append", index=index)
+            df.to_sql(name=table, con=conn, if_exists=if_exists, index=index)
 
     def read_sql(self, sql):
         with self._conn.connect() as conn:
