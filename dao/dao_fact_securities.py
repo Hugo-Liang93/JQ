@@ -1,4 +1,4 @@
-from sqlalchemy import select, delete
+from sqlalchemy import select, update
 
 from domain.securities import *
 
@@ -19,4 +19,15 @@ def r_securities_by_type(securities_type):
     return stmt
 
 
+def u_securities_margincash(margincash_list, margincash_date):
+    stmt = update(Fact_securities) \
+        .where(Fact_securities.security.in_(margincash_list)) \
+        .values({'margincash_stocks': True, 'margincash_stocks_date': margincash_date})
+    return stmt
 
+
+def u_securities_marginsec(marginsec_list, marginsec_date):
+    stmt = update(Fact_securities) \
+        .where(Fact_securities.security.in_(marginsec_list)) \
+        .values({'marginsec_stocks': True, 'marginsec_stocks_date': marginsec_date})
+    return stmt

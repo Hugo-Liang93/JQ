@@ -1,7 +1,7 @@
 from basic.db_operation import *
 from basic.jq_auth import jqAuth
 from services.initial_db import initial
-from services.securities_services import s_get_securities_to_db, s_get_index_stocks_to_db
+from services.services_securities_basic import *
 
 if __name__ == '__main__':
     jqAuth()
@@ -9,3 +9,5 @@ if __name__ == '__main__':
     initial(db_operation.conn)
     s_get_securities_to_db(db_operation)
     s_get_index_stocks_to_db(db_operation)
+    s_tag_margincash(db_operation)
+    s_tag_marginsec(db_operation)
