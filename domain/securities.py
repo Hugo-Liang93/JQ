@@ -42,14 +42,24 @@ class Fact_stock_st(Base):
 
 
 # 基金净值
-class Fact_fund_net_value(Base):
-    __tablename__ = 'fact_fund_net_value'
+class Fact_fund_net_value_day(Base):
+    __tablename__ = 'fact_fund_net_value_day'
     id = Column(Integer, primary_key=True, autoincrement=True)
     security = Column(String(50), ForeignKey('fact_securities.security'))
     security_date = Column(DateTime)
     acc_net_value = Column(Float)
     unit_net_value = Column(Float)
     adj_net_value = Column(Float)
+
+
+# 期货净值
+class Fact_futures_day(Base):
+    __tablename__ = 'fact_futures_day'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    security = Column(String(50), ForeignKey('fact_securities.security'))
+    security_date = Column(DateTime)
+    futures_sett_price = Column(Float)
+    futures_positions = Column(Float)
 
 
 class Dim_type_securities(Base):
@@ -64,5 +74,6 @@ class Dim_type_securities(Base):
 
 def initial(engine):
     Base.metadata.drop_all(engine, tables=[Fact_securities.__table__,
-                                           Fact_index_stock.__table__, Fact_stock_st.__table__])
+                                           Fact_index_stock.__table__, Fact_stock_st.__table__,
+                                           Fact_fund_net_value_day.__table__, Fact_futures_day.__table__])
     Base.metadata.create_all(engine)

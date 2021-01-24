@@ -1,10 +1,11 @@
 from datetime import datetime
 
+from dao.dao_fact_fund_net_value_day import c_fund_net_day
 from dao.dao_fact_index_stock import d_security, c_index_stock, d_security_list
 from dao.dao_fact_securities import c_securities, r_security_type, r_securities_by_type, u_securities_margincash, \
     u_securities_marginsec
 from fectching.fet_securities.securities import get_securities_jq, get_index_stocks_jq, get_margincash_stocks_jq, \
-    get_marginsec_stocks_jq
+    get_marginsec_stocks_jq, get_fund_net_value_by_type
 import pandas as pd
 
 
@@ -49,3 +50,11 @@ def s_tag_margincash(db_operation, margincash_stocks_date=datetime.now().strftim
 def s_tag_marginsec(db_operation, marginsec_stocks_date=datetime.now().strftime('%Y-%m-%d')):
     marginsec_list = get_marginsec_stocks_jq(marginsec_stocks_date)
     db_operation.conn_operate_orm(u_securities_marginsec(marginsec_list, marginsec_stocks_date))
+
+def s_fund_net_value_day(db_operation,value_type,start_date,end_date,fund_list=[]):
+    if not fund_list:
+        fund_list = db_operation.conn_operate_orm(r_securities_by_type('fund')).scalars().all()
+    df = get_fund_net_value_by_type(value_type, fund_list, start_date, end_date)
+    if value_type == 'acc_net_value':
+        print('need to be updated and it need to use orm to update the data')
+    c_fund_net_day(db_operation,df)

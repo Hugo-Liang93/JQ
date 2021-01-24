@@ -11,3 +11,4 @@ if __name__ == '__main__':
     s_get_index_stocks_to_db(db_operation)
     s_tag_margincash(db_operation)
     s_tag_marginsec(db_operation)
+    s_fund_net_value_day(db_operation,)
