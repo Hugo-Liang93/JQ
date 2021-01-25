@@ -58,8 +58,8 @@ def s_inital_fund_net_value_day(db_operation, start_date, end_date, fund_list=[]
         fund_list = db_operation.conn_operate_orm(r_securities_by_fund_flag()).scalars().all()
     print(fund_list)
     # initial
-    # db_operation.conn_operate_orm(d_fund_list(fund_list)) , 'adj_net_value'
-    for type_value in ['acc_net_value', 'unit_net_value']:
+    # db_operation.conn_operate_orm(d_fund_list(fund_list))
+    for type_value in ['acc_net_value', 'unit_net_value', 'adj_net_value']:
         input_df = get_fund_net_value_by_type(type_value, fund_list, start_date, end_date)
         result_df = __format_fund_value_day(input_df, type_value)
         if not output_df.size:

@@ -21,7 +21,7 @@ def r_securities_by_type(securities_type):
 def r_securities_by_fund_flag(flag = True):
     # subQ = select(Dim_type_securities.security_type).where(Dim_type_securities.is_fund == True)
     # stmt = select(Fact_securities.security).where(Fact_securities.type.in_(subQ))
-    stmt = select(Fact_securities.security).where(Fact_securities.type == 'etf')
+    stmt = select(Fact_securities.security).where(Fact_securities.type == 'stock_fund')
     return stmt
 
 

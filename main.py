@@ -11,4 +11,4 @@ if __name__ == '__main__':
     # s_get_index_stocks_to_db(db_operation)
     # s_tag_margincash(db_operation)
     # s_tag_marginsec(db_operation)
-    s_inital_fund_net_value_day(db_operation,'2021-01-01','2021-01-25')
+    s_inital_fund_net_value_day(db_operation,'2020-06-01','2021-01-25')
