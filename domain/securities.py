@@ -67,7 +67,7 @@ class Dim_type_securities(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     security_type = Column(String(50))
     security_cn = Column(String(50))
-    in_securities_list = Column(String(50))
+    in_securities = Column(Boolean, default=False)
     is_fund = Column(Boolean, default=False)
     is_futures = Column(Boolean, default=False)
 

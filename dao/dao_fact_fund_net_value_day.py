@@ -8,5 +8,5 @@ def c_fund_net_day(db_operation, df, if_exists='append'):
 
 
 def d_fund_list(fund_list):
-    stmt = delete(Fact_fund_net_value_day).where(Fact_fund_net_value_day.security._in(fund_list))
+    stmt = delete(Fact_fund_net_value_day).where(Fact_fund_net_value_day.security.in_(fund_list))
     return stmt

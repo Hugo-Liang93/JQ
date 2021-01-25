@@ -3,7 +3,7 @@ from datetime import datetime
 from dao.dao_fact_fund_net_value_day import c_fund_net_day, d_fund_list
 from dao.dao_fact_index_stock import d_security, c_index_stock, d_security_list
 from dao.dao_fact_securities import c_securities, r_security_type, r_securities_by_type, u_securities_margincash, \
-    u_securities_marginsec
+    u_securities_marginsec, r_securities_by_fund_flag
 from fectching.fet_securities.securities import get_securities_jq, get_index_stocks_jq, get_margincash_stocks_jq, \
     get_marginsec_stocks_jq, get_fund_net_value_by_type
 import pandas as pd
@@ -53,24 +53,34 @@ def s_tag_marginsec(db_operation, marginsec_stocks_date=datetime.now().strftime(
 
 
 def s_inital_fund_net_value_day(db_operation, start_date, end_date, fund_list=[]):
-    output_df = pd.DataFrame(columns=['security', 'security_date', 'acc_net_value', 'unit_net_value', 'adj_net_value'])
+    output_df = pd.DataFrame()
     if not fund_list:
-        fund_list = db_operation.conn_operate_orm(r_securities_by_type('fund')).scalars().all()
+        fund_list = db_operation.conn_operate_orm(r_securities_by_fund_flag()).scalars().all()
+    print(fund_list)
     # initial
-    db_operation.conn_operate_orm(d_fund_list(fund_list))
-    for type_value in ['acc_net_value', 'unit_net_value', 'adj_net_value']:
+    # db_operation.conn_operate_orm(d_fund_list(fund_list)) , 'adj_net_value'
+    for type_value in ['acc_net_value', 'unit_net_value']:
         input_df = get_fund_net_value_by_type(type_value, fund_list, start_date, end_date)
-        __format_fund_value_day(input_df, output_df, type_value)
+        result_df = __format_fund_value_day(input_df, type_value)
+        if not output_df.size:
+            output_df = result_df
+        else:
+            output_df = pd.merge(output_df,result_df,on=['security','security_date'])
     c_fund_net_day(db_operation, output_df)
 
 
-def __format_fund_value_day(input_df, output_df, type_value):
+def __format_fund_value_day(input_df, type_value):
+    mid_df = pd.DataFrame()
     input_df = input_df.reset_index()
     input_df.rename(columns={'index': 'security_date'}, inplace=True)
     # need to update
     for col in input_df.columns.values:
-        output_df.concat(pd.DataFrame({
+        if col == 'security_date':
+            continue
+        mid_df = pd.concat([mid_df,pd.DataFrame({
             'security': col,
             'security_date': input_df['security_date'],
             type_value: input_df[col]
-        }))
+        })] ,ignore_index=True)
+
+    return mid_df

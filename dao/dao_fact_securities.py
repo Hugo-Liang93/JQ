@@ -10,12 +10,18 @@ def c_securities(db_operation, df, if_exists='append'):
 # ORM Operation
 
 def r_security_type():
-    stmt = select(Dim_type_securities.security_type).where(Dim_type_securities.in_securities_list == 'Y')
+    stmt = select(Dim_type_securities.security_type).where(Dim_type_securities.in_securities == True)
     return stmt
 
 
 def r_securities_by_type(securities_type):
     stmt = select(Fact_securities.security).where(Fact_securities.type == securities_type)
+    return stmt
+
+def r_securities_by_fund_flag(flag = True):
+    # subQ = select(Dim_type_securities.security_type).where(Dim_type_securities.is_fund == True)
+    # stmt = select(Fact_securities.security).where(Fact_securities.type.in_(subQ))
+    stmt = select(Fact_securities.security).where(Fact_securities.type == 'etf')
     return stmt
 
 
