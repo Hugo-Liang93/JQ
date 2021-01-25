@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from dao.dao_fact_fund_net_value_day import c_fund_net_day
+from dao.dao_fact_fund_net_value_day import c_fund_net_day, d_fund_list
 from dao.dao_fact_index_stock import d_security, c_index_stock, d_security_list
 from dao.dao_fact_securities import c_securities, r_security_type, r_securities_by_type, u_securities_margincash, \
     u_securities_marginsec
@@ -24,17 +24,17 @@ def s_get_index_stocks_to_db(db_operation, index=None, date=datetime.now().strft
     if not index:
         indexs = db_operation.conn_operate_orm(r_securities_by_type('index')).scalars().all()
         for ind in indexs:
-            df = __formate_index_stock(ind, date)
-            dfs = pd.concat([df,dfs])
+            df = __format_index_stock(ind, date)
+            dfs = pd.concat([df, dfs])
         db_operation.conn_operate_orm(d_security_list(indexs))
         c_index_stock(db_operation, dfs)
     else:
-        df = __formate_index_stock(index, date)
+        df = __format_index_stock(index, date)
         db_operation.conn_operate_orm(d_security(index))
         c_index_stock(db_operation, df)
 
 
-def __formate_index_stock(index, date):
+def __format_index_stock(index, date):
     stock_list = get_index_stocks_jq(index, date)
     df = pd.DataFrame(stock_list, columns=['child_stock'])
     df['security'] = index
@@ -51,10 +51,26 @@ def s_tag_marginsec(db_operation, marginsec_stocks_date=datetime.now().strftime(
     marginsec_list = get_marginsec_stocks_jq(marginsec_stocks_date)
     db_operation.conn_operate_orm(u_securities_marginsec(marginsec_list, marginsec_stocks_date))
 
-def s_fund_net_value_day(db_operation,value_type,start_date,end_date,fund_list=[]):
+
+def s_inital_fund_net_value_day(db_operation, start_date, end_date, fund_list=[]):
+    output_df = pd.DataFrame(columns=['security', 'security_date', 'acc_net_value', 'unit_net_value', 'adj_net_value'])
     if not fund_list:
         fund_list = db_operation.conn_operate_orm(r_securities_by_type('fund')).scalars().all()
-    df = get_fund_net_value_by_type(value_type, fund_list, start_date, end_date)
-    if value_type == 'acc_net_value':
-        print('need to be updated and it need to use orm to update the data')
-    c_fund_net_day(db_operation,df)
+    # initial
+    db_operation.conn_operate_orm(d_fund_list(fund_list))
+    for type_value in ['acc_net_value', 'unit_net_value', 'adj_net_value']:
+        input_df = get_fund_net_value_by_type(type_value, fund_list, start_date, end_date)
+        __format_fund_value_day(input_df, output_df, type_value)
+    c_fund_net_day(db_operation, output_df)
+
+
+def __format_fund_value_day(input_df, output_df, type_value):
+    input_df = input_df.reset_index()
+    input_df.rename(columns={'index': 'security_date'}, inplace=True)
+    # need to update
+    for col in input_df.columns.values:
+        output_df.concat(pd.DataFrame({
+            'security': col,
+            'security_date': input_df['security_date'],
+            type_value: input_df[col]
+        }))
