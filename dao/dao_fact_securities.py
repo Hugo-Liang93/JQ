@@ -1,4 +1,4 @@
-from sqlalchemy import select, update
+from sqlalchemy import select, update, and_
 
 from domain.securities import *
 
@@ -14,14 +14,26 @@ def r_security_type():
     return stmt
 
 
+# 获取指定类型数据
 def r_securities_by_type(securities_type):
     stmt = select(Fact_securities.security).where(Fact_securities.type == securities_type)
     return stmt
 
-def r_securities_by_fund_flag(flag = True):
-    # subQ = select(Dim_type_securities.security_type).where(Dim_type_securities.is_fund == True)
-    # stmt = select(Fact_securities.security).where(Fact_securities.type.in_(subQ))
-    stmt = select(Fact_securities.security).where(Fact_securities.type == 'stock_fund')
+
+def r_securities_is_fund():
+    stmt = select(Dim_type_securities.security_type).where(Dim_type_securities.is_fund == True)
+    return stmt
+
+
+def r_securities_by_fund_flag(start_date, end_date):
+    stmt = select(Fact_securities.security, Fact_securities.type).\
+        where(
+        and_(
+            Fact_securities.type.in_(r_securities_is_fund()),
+            Fact_securities.start_date <= end_date,
+            Fact_securities.end_date >= start_date
+            )
+        )
     return stmt
 
 
