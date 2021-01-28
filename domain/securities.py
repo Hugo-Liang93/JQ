@@ -27,9 +27,12 @@ class Fact_securities(Base):
 class Fact_index_stock(Base):
     __tablename__ = 'fact_index_stock'
     id = Column(Integer, primary_key=True, autoincrement=True)
+    # index_code
     security = Column(String(50), ForeignKey('fact_securities.security'))
     child_stock = Column(String(50))
+    display_name = Column(String(50))
     effective_date = Column(DateTime)
+    weight = Column(Float)
 
 
 # 股票ST
@@ -39,6 +42,17 @@ class Fact_stock_st(Base):
     security = Column(String(50), ForeignKey('fact_securities.security'))
     security_date = Column(DateTime)
     is_st = Column(Boolean, default=False)
+
+
+class Fact_stock_lockd_shares(Base):
+    __tablename__ = 'fact_stock_lockd_shares'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    security = Column(String(50), ForeignKey('fact_securities.security'))
+    # 解禁日期
+    day = Column(DateTime)
+    num = Column(Float)
+    rate1 = Column(Float)
+    rate2 = Column(Float)
 
 
 # 基金净值
@@ -73,7 +87,7 @@ class Dim_type_securities(Base):
 
 
 def initial(engine):
-    Base.metadata.drop_all(engine, tables=[Fact_securities.__table__,
-                                           Fact_index_stock.__table__, Fact_stock_st.__table__,
-                                           Fact_fund_net_value_day.__table__, Fact_futures_day.__table__])
+    # Base.metadata.drop_all(engine, tables=[Fact_securities.__table__,
+    #                                        Fact_index_stock.__table__, Fact_stock_st.__table__,
+    #                                        Fact_fund_net_value_day.__table__, Fact_futures_day.__table__])
     Base.metadata.create_all(engine)

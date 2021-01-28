@@ -11,6 +11,10 @@ def get_index_stocks_jq(index_symbol, date=None):
     return get_index_stocks(index_symbol, date)
 
 
+def get_index_weights_jq(index_symbol, date=None):
+    return get_index_weights(index_symbol, date)
+
+
 # date默认为最近一次发布的融资标的列表
 def get_margincash_stocks_jq(date=None):
     return get_margincash_stocks(date)
@@ -22,6 +26,10 @@ def get_marginsec_stocks_jq(date=None):
 
 def get_stock_st(stocks_list, start_date, end_date, df=True, count=None):
     return get_extras('is_st', stocks_list, start_date=start_date, end_date=end_date, df=df, count=count)
+
+
+def get_stock_locked_shares(stocks_list, start_date, end_date, forward_count=None):
+    return get_locked_shares(stocks_list, start_date, end_date, forward_count)
 
 
 # value_type:
@@ -40,4 +48,4 @@ def get_fund_net_value_by_type(value_type, fund_list, start_date, end_date, df=T
 def get_futures_value_by_type(value_type, fund_list,
                               start_date, end_date, df=True, count=None):
     return get_extras(value_type, fund_list,
-               start_date=start_date, end_date=end_date, df=df, count=count)
+                      start_date=start_date, end_date=end_date, df=df, count=count)

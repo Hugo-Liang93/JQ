@@ -9,31 +9,34 @@ def c_securities(db_operation, df, if_exists='append'):
 
 # ORM Operation
 
-def r_security_type():
+# 获取能security产品列表
+def r_fetching_security_type():
     stmt = select(Dim_type_securities.security_type).where(Dim_type_securities.in_securities == True)
     return stmt
 
 
-# 获取指定类型数据
+# 获取指定类型产品数据
 def r_securities_by_type(securities_type):
     stmt = select(Fact_securities.security).where(Fact_securities.type == securities_type)
     return stmt
 
 
+# 获取Fund的产品列表
 def r_securities_is_fund():
     stmt = select(Dim_type_securities.security_type).where(Dim_type_securities.is_fund == True)
     return stmt
 
 
-def r_securities_by_fund_flag(start_date, end_date):
-    stmt = select(Fact_securities.security, Fact_securities.type).\
+# 获取指定类型产品列表并包含生效时间
+def r_securities_by_type_date(type_stmt, start_date, end_date):
+    stmt = select(Fact_securities.security, Fact_securities.type). \
         where(
         and_(
-            Fact_securities.type.in_(r_securities_is_fund()),
+            Fact_securities.type.in_(type_stmt),
             Fact_securities.start_date <= end_date,
             Fact_securities.end_date >= start_date
-            )
         )
+    )
     return stmt
 
 
