@@ -1,11 +1,11 @@
 from datetime import datetime
 
-from dao.dao_fact_fund_net_value_day import c_fund_net_day, d_fund_list
-from dao.dao_fact_index_stock import d_security, c_index_stock, d_security_list
-from dao.dao_fact_locked_shares import c_stock_locked
-from dao.dao_fact_securities import *
-from dao.dao_fact_stock_st import c_stock_st
-from fectching.fet_securities.securities import *
+from dao.securities.dao_fact_fund_net_value_day import c_fund_net_day, d_fund_list
+from dao.securities.dao_fact_index_stock import c_index_stock, d_security_list
+from dao.securities.dao_fact_locked_shares import c_stock_locked
+from dao.securities.dao_fact_securities import *
+from dao.securities.dao_fact_stock_st import c_stock_st
+from fectching.securities import *
 import pandas as pd
 
 
@@ -41,7 +41,7 @@ def s_index_stocks_weight(db_operation, indexs=[], date=datetime.now().strftime(
         stock_weight = get_index_weights_jq(index, date)
         stock_weight = stock_weight.reset_index()
         stock_weight['security'] = index
-        stock_weight.rename(columns={'code': 'child_stock', 'date': 'effective_date' }, inplace=True)
+        stock_weight.rename(columns={'code': 'child_stock', 'date': 'effective_date','index':'child_stock' }, inplace=True)
         output_df = pd.concat([stock_weight, output_df],sort=True)
     db_operation.conn_operate_orm(d_security_list(indexs))
     c_index_stock(db_operation, output_df)

@@ -86,7 +86,7 @@ class Dim_type_securities(Base):
     is_futures = Column(Boolean, default=False)
 
 
-def initial(engine):
+def initial_securities(engine):
     # Base.metadata.drop_all(engine, tables=[Fact_securities.__table__,
     #                                        Fact_index_stock.__table__, Fact_stock_st.__table__,
     #                                        Fact_fund_net_value_day.__table__, Fact_futures_day.__table__])

@@ -4,7 +4,7 @@ from services.initial_db import initial
 from services.services_securities_basic import *
 
 if __name__ == '__main__':
-    jqAuth()
+    # jqAuth()
     db_operation = DBOperation(db='jq', user='root', pasw='root')
     initial(db_operation.conn)
     # s_get_securities_to_db(db_operation)
@@ -15,4 +15,4 @@ if __name__ == '__main__':
     # s_initial_fund_net_value_day(db_operation,'2017-01-01','2021-01-28')
     # s_initial_stock_st(db_operation,'2017-01-01','2021-01-28')
     # s_initial_stock_locked_shares(db_operation, '2017-01-01', '2025-01-28')
-    s_index_stocks_weight(db_operation)
+    # s_index_stocks_weight(db_operation)
