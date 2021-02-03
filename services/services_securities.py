@@ -15,7 +15,7 @@ def s_get_securities_to_db(db_operation, types=[], date=datetime.now().strftime(
     df_securities = get_securities_jq(types, date)
     df_securities = df_securities.reset_index()
     df_securities.rename(columns={'index': 'security'}, inplace=True)
-    df_securities['fetching_date'] = datetime.now().strftime('%Y-%m-%d')
+    df_securities['fetching_date'] = date
     c_securities(db_operation, df_securities)
 
 

@@ -1,12 +1,14 @@
 from basic.db_operation import *
 from basic.jq_auth import jqAuth
 from services.initial_db import initial
-from services.services_securities_basic import *
+from services.services_industry import s_get_industry_by_type
+from services.services_securities import *
 
 if __name__ == '__main__':
-    # jqAuth()
+    jqAuth()
     db_operation = DBOperation(db='jq', user='root', pasw='root')
     initial(db_operation.conn)
+    s_get_industry_by_type(db_operation)
     # s_get_securities_to_db(db_operation)
     # s_get_index_stocks_to_db(db_operation)
     # s_tag_margin_cash(db_operation)
