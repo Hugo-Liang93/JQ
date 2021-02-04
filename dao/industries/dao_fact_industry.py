@@ -14,6 +14,11 @@ def r_industry_by_industry_parent(industry_parents=None):
     return stmt
 
 
+def r_industry_industry_parent():
+    stmt = select(Fact_industry.industry_parent, Fact_industry.industry)
+    return stmt
+
+
 def r_industry_parent(industry):
     stmt = select(Fact_industry.industry_parent)
     if not industry:

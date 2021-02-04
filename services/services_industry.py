@@ -1,5 +1,6 @@
 from dao.industries.dao_dim_type_industry import r_parent_industry, r_parent_industry_by_type
-from dao.industries.dao_fact_industry import c_fact_industry, r_industry_parent, r_industry_by_industry_parent
+from dao.industries.dao_fact_industry import c_fact_industry, r_industry_parent, r_industry_by_industry_parent, \
+    r_industry_industry_parent
 from dao.industries.dao_fact_industry_stocks import c_fact_industry_stocks, d_industry_stocks_by_industry, \
     d_industry_stocks_list
 from fectching.industries import get_industries_jq, get_industry_stocks_jq
@@ -36,12 +37,13 @@ def s_get_industry_stocks(db_operation, industry_parent=None, industry=None):
         if industry_parent:
             industry_list = db_operation.conn_operate_orm(r_industry_by_industry_parent(industry_parent)).scalars().all()
         else:
-            industry_list = db_operation.conn_operate_orm().scalars().all()
-        for industry in industry_list:
-            stock_mid = s_get_industry_stocks_by_industry(industry, industry_parent)
-            stock_df = pd.concat([stock_df, stock_mid], sort=True)
-        d_industry_stocks_list(industry_list)
-        c_fact_industry_stocks(db_operation, stock_df)
+            industry_ = db_operation.conn_operate_orm(r_industry_industry_parent()).scalars().all()
+            print(industry_)
+        # for industry in industry_list:
+        #     stock_mid = s_get_industry_stocks_by_industry(industry, industry_parent)
+        #     stock_df = pd.concat([stock_df, stock_mid], sort=True)
+        # d_industry_stocks_list(industry_list)
+        # c_fact_industry_stocks(db_operation, stock_df)
 
 
 def s_get_industry_stocks_by_industry(industry, industry_parent):
