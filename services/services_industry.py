@@ -34,22 +34,23 @@ def s_get_industry_stocks(db_operation, industry_parent=None, industry=None):
         c_fact_industry_stocks(db_operation, stock_df)
     else:
         stock_df = pd.DataFrame()
+        del_list = []
         if industry_parent:
-            industry_list = db_operation.conn_operate_orm(r_industry_by_industry_parent(industry_parent)).scalars().all()
+            industry_tuple_list = db_operation.conn_operate_orm(r_industry_by_industry_parent(industry_parent)).all()
         else:
-            industry_ = db_operation.conn_operate_orm(r_industry_industry_parent()).scalars().all()
-            print(industry_)
-        # for industry in industry_list:
-        #     stock_mid = s_get_industry_stocks_by_industry(industry, industry_parent)
-        #     stock_df = pd.concat([stock_df, stock_mid], sort=True)
-        # d_industry_stocks_list(industry_list)
-        # c_fact_industry_stocks(db_operation, stock_df)
+            industry_tuple_list = db_operation.conn_operate_orm(r_industry_industry_parent()).all()
+        for industry_parent,industry in industry_tuple_list:
+            del_list.append(industry)
+            stock_mid = s_get_industry_stocks_by_industry(industry, industry_parent)
+            stock_df = pd.concat([stock_df, stock_mid], sort=True)
+        d_industry_stocks_list(del_list)
+        c_fact_industry_stocks(db_operation, stock_df)
 
 
 def s_get_industry_stocks_by_industry(industry, industry_parent):
     stock_list = get_industry_stocks_jq(industry)
     stock_df = pd.DataFrame(stock_list, columns=['stock'])
     stock_df['industry_parent'] = industry_parent
-    stock_df['industry'] = industry_parent
+    stock_df['industry'] = industry
     stock_df['fetching_date'] = datetime.now().strftime('%Y-%m-%d')
     return stock_df

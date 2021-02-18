@@ -1,8 +1,7 @@
 # 1.4导入方式
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import relationship
 from sqlalchemy import Column, String, DateTime, Integer, ForeignKey, Boolean, Float
-
-Base = declarative_base()
+from domain.domain_base import Base
 
 
 class Fact_securities(Base):

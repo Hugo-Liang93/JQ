@@ -5,9 +5,9 @@ from services.services_industry import s_get_industry_by_type, s_get_industry_st
 from services.services_securities import *
 
 if __name__ == '__main__':
-    # jqAuth()
+    jqAuth()
     db_operation = DBOperation(db='jq', user='root', pasw='root')
-    initial(db_operation.conn)
+    # initial(db_operation.conn)
     # s_get_industry_by_type(db_operation)
     # s_get_securities_to_db(db_operation)
     # s_get_index_stocks_to_db(db_operation)

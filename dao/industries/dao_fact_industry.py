@@ -8,7 +8,7 @@ def c_fact_industry(db_operation, df, if_exists='append'):
 
 
 def r_industry_by_industry_parent(industry_parents=None):
-    stmt = select(Fact_industry.industry)
+    stmt = select(Fact_industry.industry_parent,Fact_industry.industry)
     if industry_parents:
         stmt = stmt.where(Fact_industry.industry_parent.in_(industry_parents))
     return stmt
