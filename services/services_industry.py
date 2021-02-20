@@ -1,9 +1,10 @@
+from dao.industries.dao_dim_concepts import c_dim_concepts
 from dao.industries.dao_dim_type_industry import r_parent_industry, r_parent_industry_by_type
 from dao.industries.dao_fact_industry import c_fact_industry, r_industry_parent, r_industry_by_industry_parent, \
     r_industry_industry_parent
 from dao.industries.dao_fact_industry_stocks import c_fact_industry_stocks, d_industry_stocks_by_industry, \
     d_industry_stocks_list
-from fectching.industries import get_industries_jq, get_industry_stocks_jq
+from fectching.industries import get_industries_jq, get_industry_stocks_jq, get_concepts_jq
 from datetime import datetime
 import pandas as pd
 
@@ -54,3 +55,15 @@ def s_get_industry_stocks_by_industry(industry, industry_parent):
     stock_df['industry'] = industry
     stock_df['fetching_date'] = datetime.now().strftime('%Y-%m-%d')
     return stock_df
+
+
+def s_get_concepts():
+    concepts_df = get_concepts_jq()
+    concepts_df.rename(
+            columns={'index': 'concepts_index', 'name': 'concepts_name', 'start_date': 'concepts_start_date'}, inplace=True)
+    c_dim_concepts(concepts_df)
+
+
+def s_get_concept_stocks(db_operation,concepts_index):
+    if concepts_index:
+        stock_list = get_industry_stocks_jq()

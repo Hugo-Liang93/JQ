@@ -9,5 +9,5 @@ def get_industry_stocks_jq(industry_code, date=None):
     return get_industry_stocks(industry_code, date)
 
 
-def get_concepts_jp():
+def get_concepts_jq():
     return get_concepts()
