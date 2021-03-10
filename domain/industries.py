@@ -41,6 +41,7 @@ class Fact_industry_stocks(Base):
 class Fact_concept_stocks(Base):
     __tablename__ = 'fact_concept_stocks'
     id = Column(Integer, primary_key=True, autoincrement=True)
+    concepts_index = Column(String(50), ForeignKey('dim_concepts.concepts_index'))
 
 
 def initial_industries(engine):

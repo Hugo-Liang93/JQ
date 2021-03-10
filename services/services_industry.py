@@ -1,10 +1,10 @@
-from dao.industries.dao_dim_concepts import c_dim_concepts
+from dao.industries.dao_dim_concepts import c_dim_concepts, r_concepts_index
 from dao.industries.dao_dim_type_industry import r_parent_industry, r_parent_industry_by_type
 from dao.industries.dao_fact_industry import c_fact_industry, r_industry_parent, r_industry_by_industry_parent, \
     r_industry_industry_parent
 from dao.industries.dao_fact_industry_stocks import c_fact_industry_stocks, d_industry_stocks_by_industry, \
     d_industry_stocks_list
-from fectching.industries import get_industries_jq, get_industry_stocks_jq, get_concepts_jq
+from fectching.industries import get_industries_jq, get_industry_stocks_jq, get_concepts_jq, get_concept_stocks_jq
 from datetime import datetime
 import pandas as pd
 
@@ -66,4 +66,12 @@ def s_get_concepts():
 
 def s_get_concept_stocks(db_operation,concepts_index):
     if concepts_index:
-        stock_list = get_industry_stocks_jq()
+        stock_list = get_concept_stocks_jq(concepts_index)
+    else:
+        concepts_index = db_operation.conn_operate_orm(r_concepts_index()).scalars().all()
+    stock_df = pd.DataFrame(stock_list, columns=['stock'])
+
+
+def s_get_stocks_by_concept(concepts_index):
+    stock_list = get_concept_stocks_jq(concepts_index)
+    stock_df = pd.DataFrame(stock_list, columns=['stock'])

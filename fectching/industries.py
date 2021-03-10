@@ -11,3 +11,7 @@ def get_industry_stocks_jq(industry_code, date=None):
 
 def get_concepts_jq():
     return get_concepts()
+
+
+def get_concept_stocks_jq(concepts_index, date=None):
+    return get_concept_stocks(concepts_index, date)
